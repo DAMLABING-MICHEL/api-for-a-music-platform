@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class PlayList {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String title;
 	private Date createdDate;

@@ -33,7 +33,14 @@ public class MusicController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
 		}
 	}
-	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getMusicById(@PathVariable long id){
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(musicService.getMusicById(id));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
 	@PostMapping("/albums/{albumId}")
 	public ResponseEntity<Music> save(@PathVariable long albumId,@RequestBody MusicDto musicDto){
 		return ResponseEntity.status(HttpStatus.CREATED).body(musicService.save(albumId,musicDto));
@@ -48,7 +55,11 @@ public class MusicController {
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable long id){
-		musicService.delete(id);
-		return ResponseEntity.status(HttpStatus.OK).body("the music deleted successfully");
+		try {
+			musicService.delete(id);
+			return ResponseEntity.status(HttpStatus.OK).body("the music deleted successfully");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
 	}
 }

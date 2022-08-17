@@ -43,6 +43,7 @@ public class MusicService {
 	
 	@Autowired
 	private ArtistRepository artistRepository;
+	
 	public Map<String, Object> getMusics(int page,int size){
 		PageRequest paging = PageRequest.of(page, size);
 		Page<Music> pageMusics = musicRepository.findAll(paging);
@@ -58,6 +59,13 @@ public class MusicService {
 		}
 		else
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT,"the list of musics is empty");
+	}
+	public MusicDto getMusicById(long id) {
+		Music music = musicRepository.findById(id).get();
+		if(music != null)
+			return musicMapper.mapToDto(music);
+		else
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	}
 	public List<MusicDto> getFeaturingList(long artistId){
 		List<Music> artistMusics = musicRepository.findMusicsByArtistsId(artistId);
@@ -96,6 +104,10 @@ public class MusicService {
 		return musicRepository.save(music);
 	}
 	public void delete(long id) {
-		musicRepository.deleteById(id);
+		Music music = musicRepository.findById(id).get();
+		if(music != null)
+			musicRepository.deleteById(id);
+		else
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	}
 }

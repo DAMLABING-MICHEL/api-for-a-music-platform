@@ -1,10 +1,8 @@
 package com.musicmanager.api.controller;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.musicmanager.api.model.dto.PlayListDto;
 import com.musicmanager.api.model.dto.UserDto;
@@ -38,12 +35,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/{userId}/playLists")
-	public ResponseEntity<List<PlayListDto>> getPlayListsByUserId(@PathVariable long userId){
-		return ResponseEntity.status(HttpStatus.OK).body(userService.getPlayListsByUserId(userId));
+	public ResponseEntity<?> getPlayListsByUserId(@PathVariable long userId){
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.getPlayListsByUserId(userId));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+		}
 	}
 	@GetMapping("/{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable long id){
-		return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
+	public ResponseEntity<?> getUserById(@PathVariable long id){
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
 	}
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody UserDto userDto){

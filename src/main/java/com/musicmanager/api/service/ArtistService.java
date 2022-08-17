@@ -3,7 +3,9 @@ package com.musicmanager.api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.musicmanager.api.mapper.AlbumMapper;
 import com.musicmanager.api.mapper.ArtistMapper;
@@ -52,7 +54,13 @@ public class ArtistService {
 		List<Artist> artists = (List<Artist>) artistRepository.findAll();
 		return artistMapper.mapToDtos(artists);
 	}
-	
+	public ArtistDto getArtistById(long id) {
+		Artist artist = artistRepository.findById(id).get();
+		if(artist != null)
+			return artistMapper.mapToDto(artist);
+		else
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	}
 	public List<AlbumDto> getAlbumsByArtistId(long id){
 		List<Album> albums = albumRepository.findByArtistId(id);
 		return albumMapper.mapToDtos(albums);
@@ -69,6 +77,9 @@ public class ArtistService {
 		return userMapper.mapToDtos(followers);
 	}
 	public Artist save(ArtistDto artistDto) {
+		return artistRepository.save(artistMapper.mapToEntity(artistDto));
+	}
+	public Artist update(ArtistDto artistDto) {
 		return artistRepository.save(artistMapper.mapToEntity(artistDto));
 	}
 	public Music saveMusic(long artistId,MusicDto musicDto) {

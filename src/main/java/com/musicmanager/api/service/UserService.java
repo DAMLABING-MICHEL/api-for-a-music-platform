@@ -48,12 +48,21 @@ public class UserService{
 	
 	public UserDto getUserById(long id) {
 		User user = userRepository.findById(id).get();
-		return userMapper.mapToDto(user);
+		if(user != null)
+			return userMapper.mapToDto(user);
+		else
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 	}
 	
 	public List<PlayListDto> getPlayListsByUserId(long userId){
+		User user = userRepository.findById(userId).get();
 		List<PlayList> playLists = playListRepository.findByUserId(userId);
-		return playListMapper.mapToDtos(playLists);
+		if(user == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		else if(playLists.isEmpty())
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+		else
+			return playListMapper.mapToDtos(playLists);
 	}
 	public User save(UserDto userDto) {
 			return userRepository.save(userMapper.mapToEntity(userDto));
